@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 template <typename T>
@@ -60,9 +61,9 @@ public:
             head->next = head;
         } else {
             temp->next=head;
-            head->prev=temp;
             temp->prev=head->prev;
             head->prev->next=temp;
+            head->prev=temp;
         }
         size++;
     }
@@ -71,6 +72,7 @@ public:
         Nodo<T>* temp = head;
         T delete_val = head->data;
         if(head==nullptr){
+            head=nullptr;
             cout<<"Lista vacía"<<endl;
         } else if(head->next!=head){
             head->next->prev=head->prev;
@@ -205,5 +207,33 @@ public:
         head = last;
     }
 
+void print() {
+    if (head == nullptr) {
+        cout << "Lista vacía" << endl;
+        return;
+    }
+
+    Nodo<T>* temp = head;
+    do {
+        cout << temp->data << " ";
+        temp = temp->next;
+    } while (temp != head); // Se recorre la lista circular hasta volver al head
+
+    cout << endl;
+    }
+
 };
 
+int main() {
+    ListaCircular<string> Lista1;
+    Lista1.push_back("hola");
+    Lista1.push_back("como");
+    Lista1.push_back("estas");
+
+    int tam = Lista1.tam_list();
+    cout << "Tamaño de la lista: " << tam << endl;
+
+    Lista1.print();
+
+    return 0;
+}
