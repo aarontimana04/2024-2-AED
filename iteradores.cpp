@@ -1,52 +1,128 @@
 #include <iostream>
-#include <vector>
-#include <list>
 
-int main() {
-    // Vector con acceso aleatorio
-    std::vector<int> vec = {10, 20, 30, 40, 50};
-    
-    std::cout << "Recorriendo vector: ";
-    for (std::vector<int>::iterator it = vec.begin(); it != vec.end(); ++it) {
-        std::cout << *it << " "; // Acceso a los elementos
+using namespace std;
+
+template <typename T>
+struct Nodo {
+    T valor;
+    Nodo<T>* next;
+    Nodo<T>* tail;
+    Nodo() : valor(0), next(nullptr), tail(nullptr){};
+    Nodo(const T& val) : valor(val), next(nullptr), tail(nullptr){};
+};
+
+template<typename T>
+class iter_stack {
+    private:
+    Nodo<T>* head;
+    public:
+    iter_stack() : head(nullptr){};
+
+    //completo
+    bool empty(){
+        return head == nullptr;
     }
-    std::cout << std::endl;
 
-    // Lista con acceso bidireccional
-    std::list<int> lst = {100, 200, 300, 400, 500};
-    
-    std::cout << "Recorriendo lista de adelante hacia atrás: ";
-    for (std::list<int>::iterator it = lst.begin(); it != lst.end(); ++it) {
-        std::cout << *it << " ";
+    //completo
+    int size(){
+        Nodo<T>* temp = head;
+        int contador = 0;
+        while(temp != nullptr){
+            contador++;
+            temp = temp->next;
+        }
+        return contador;
     }
-    std::cout << std::endl;
 
-    std::cout << "Recorriendo lista de atrás hacia adelante: ";
-    for (std::list<int>::reverse_iterator rit = lst.rbegin(); rit != lst.rend(); ++rit) {
-        std::cout << *rit << " ";
+    //completo
+    void push(Nodo<T>* nnodo){
+        if(head == nullptr){
+            head = nnodo;
+            head->tail = nnodo;
+        } else {
+            head->tail->next = nnodo;
+            head->tail = nnodo;
+        }
     }
-    std::cout << std::endl;
-
-    return 0;
-}
-
-
-
-#include <iostream>
-#include <vector>
-#include <algorithm> // Para usar std::find
-
-int main() {
-    std::vector<int> vec = {10, 20, 30, 40, 50};
     
-    // Encontrar el valor 30 usando std::find
-    auto it = std::find(vec.begin(), vec.end(), 30);
-    
-    if (it != vec.end()) {
-        std::cout << "Elemento encontrado: " << *it << std::endl;
-    } else {
-        std::cout << "Elemento no encontrado." << std::endl;
+    //faltante
+    void pop() {
+        if (head == nullptr) {
+            cout << "Stack is empty" << endl;
+            return;
+        }
+
+        if (head->next == nullptr) {
+            delete head;
+            head = nullptr;
+            return;
+        }
+
+        Nodo<T>* temp = head;
+        while (temp->next->next != nullptr) {
+            temp = temp->next;
+        }
+        Nodo<T>* lastNode = temp->next;
+        temp->next = nullptr;
+        delete lastNode;
+        head->tail = temp;
     }
+
+    //incompleto
+    T top() {
+        if (head == nullptr) {
+            cout << "Stack is empty." << endl;
+            return T();  // Valor por defecto de T
+        }
+        return head->tail->valor;
+    }
+
+    //completo
+    void print(){
+        Nodo<T>* temp = head;
+        while(temp != nullptr){
+            cout << temp->valor << " ";
+            temp = temp->next;
+        }
+        if (head == nullptr)
+            cout << "Stack vacío";
+
+        cout << endl;
+    }
+
+};
+
+int main(){
+    iter_stack<int> pila;
+    Nodo<int>* n1 = new Nodo<int>(2);
+    Nodo<int>* n2 = new Nodo<int>(3);
+    Nodo<int>* n3 = new Nodo<int>(4);
+
+    pila.push(n1);
+    pila.push(n2);
+    pila.push(n3);
+
+    pila.print();
+
+    cout << pila.top() << endl;
+
+    pila.pop();
+
+    pila.print();
+
+    cout << pila.top() << endl;
+
+    pila.print();
+
+    pila.pop();
+
+    pila.print();
+
+    cout << pila.top() << endl;
+
+    pila.pop();
+
+    pila.print();
 
     return 0;
 }
