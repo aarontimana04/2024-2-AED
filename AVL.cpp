@@ -36,6 +36,7 @@ public:
         return altura(nodo->izquierda) - altura(nodo->derecha);
     }
 
+    // estudiar rotaciones
     Nodo<T>* rotacionDerecha(Nodo<T>* y) {
         Nodo<T>* x = y->izquierda;
         Nodo<T>* T2 = x->derecha;
@@ -67,7 +68,8 @@ public:
         // Retornamos la nueva raíz
         return y;
     }
-
+    // fin de rotaciones
+    
     void insertar(Nodo<T>* &root, T valor) {
         if (root == nullptr) {
             root = new Nodo<T>(valor);
