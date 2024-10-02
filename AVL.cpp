@@ -17,16 +17,13 @@ class AVL {
 private:
     Nodo<T>* root;
 
-public:
-    AVL() : root(nullptr) {}
-
     bool empty(Nodo<T>* nodo) {
         return nodo == nullptr;
     }
 
     int altura(Nodo<T>* nodo) {
         if (nodo == nullptr)
-            return -1;
+            return 0;
         return nodo->altura;
     }
 
@@ -36,20 +33,16 @@ public:
         return altura(nodo->izquierda) - altura(nodo->derecha);
     }
 
-    // estudiar rotaciones
     Nodo<T>* rotacionDerecha(Nodo<T>* y) {
         Nodo<T>* x = y->izquierda;
         Nodo<T>* T2 = x->derecha;
 
-        // Realizamos la rotación
         x->derecha = y;
         y->izquierda = T2;
 
-        // Actualizamos las alturas
         y->altura = max(altura(y->izquierda), altura(y->derecha)) + 1;
         x->altura = max(altura(x->izquierda), altura(x->derecha)) + 1;
 
-        // Retornamos la nueva raíz
         return x;
     }
 
@@ -57,55 +50,44 @@ public:
         Nodo<T>* y = x->derecha;
         Nodo<T>* T2 = y->izquierda;
 
-        // Realizamos la rotación
         y->izquierda = x;
         x->derecha = T2;
 
-        // Actualizamos las alturas
         x->altura = max(altura(x->izquierda), altura(x->derecha)) + 1;
         y->altura = max(altura(y->izquierda), altura(y->derecha)) + 1;
 
-        // Retornamos la nueva raíz
         return y;
     }
-    // fin de rotaciones
-    
+
     void insertar(Nodo<T>* &root, T valor) {
         if (root == nullptr) {
             root = new Nodo<T>(valor);
             return;
         }
+
         if (valor < root->valor) {
             insertar(root->izquierda, valor);
         } else if (valor > root->valor) {
             insertar(root->derecha, valor);
         } else {
-            return; // No se permiten valores duplicados
+            return;
         }
 
-        // Actualizamos la altura del nodo actual
         root->altura = 1 + max(altura(root->izquierda), altura(root->derecha));
 
-        // Verificamos el balance del nodo actual
         int balance = factorBalanceo(root);
 
-        // Caso 1: Rotación a la derecha (LL)
-        if (balance > 1 && valor < root->izquierda->valor) {
+        if (balance > 1 && valor < root->izquierda->valor)
             root = rotacionDerecha(root);
-        }
 
-        // Caso 2: Rotación a la izquierda (RR)
-        if (balance < -1 && valor > root->derecha->valor) {
+        if (balance < -1 && valor > root->derecha->valor)
             root = rotacionIzquierda(root);
-        }
 
-        // Caso 3: Rotación doble izquierda-derecha (LR)
         if (balance > 1 && valor > root->izquierda->valor) {
             root->izquierda = rotacionIzquierda(root->izquierda);
             root = rotacionDerecha(root);
         }
 
-        // Caso 4: Rotación doble derecha-izquierda (RL)
         if (balance < -1 && valor < root->derecha->valor) {
             root->derecha = rotacionDerecha(root->derecha);
             root = rotacionIzquierda(root);
@@ -113,22 +95,21 @@ public:
     }
 
     bool buscar(Nodo<T>* root, T valor) {
-        if (root == nullptr) {
+        if (root == nullptr)
             return false;
-        }
-        if (valor > root->valor) {
-            return buscar(root->derecha, valor);
-        } else if (valor < root->valor) {
+
+        if (valor < root->valor)
             return buscar(root->izquierda, valor);
-        } else {
-            return true;
-        }
+
+        if (valor > root->valor)
+            return buscar(root->derecha, valor);
+
+        return true;
     }
 
     void eliminar(Nodo<T>* &root, T valor) {
-        if (root == nullptr) {
+        if (root == nullptr)
             return;
-        }
 
         if (valor < root->valor) {
             eliminar(root->izquierda, valor);
@@ -137,6 +118,7 @@ public:
         } else {
             if (root->izquierda == nullptr || root->derecha == nullptr) {
                 Nodo<T>* temp = root->izquierda ? root->izquierda : root->derecha;
+
                 if (temp == nullptr) {
                     temp = root;
                     root = nullptr;
@@ -155,7 +137,6 @@ public:
             return;
 
         root->altura = max(altura(root->izquierda), altura(root->derecha)) + 1;
-
         int balance = factorBalanceo(root);
 
         if (balance > 1 && factorBalanceo(root->izquierda) >= 0)
@@ -181,4 +162,63 @@ public:
             actual = actual->izquierda;
         return actual;
     }
+
+    void printTree(Nodo<T> *root, string indent, bool last) {
+        if (root != nullptr) {
+            cout << indent;
+            if (last) {
+                cout << "R----";
+                indent += "   ";
+            } else {
+                cout << "L----";
+                indent += "|  ";
+            }
+            cout << root->valor << endl;
+            printTree(root->izquierda, indent, false);
+            printTree(root->derecha, indent, true);
+        }
+    }
+
+public:
+    AVL() : root(nullptr) {}
+
+    void insertar(T valor) {
+        insertar(root, valor);
+    }
+
+    bool buscar(T valor) {
+        return buscar(root, valor);
+    }
+
+    void eliminar(T valor) {
+        eliminar(root, valor);
+    }
+
+    void printTree() {
+        printTree(root, "", true);
+    }
 };
+
+int main() {
+    AVL<int> avlTree;
+
+    avlTree.insertar(5);
+    avlTree.insertar(2);
+    avlTree.insertar(3);
+    avlTree.insertar(8);
+    avlTree.insertar(9);
+    avlTree.insertar(7);
+
+    cout << "Árbol AVL después de las inserciones:" << endl;
+    avlTree.printTree();
+
+    cout << "\nEliminando el valor 7" << endl;
+    avlTree.eliminar(7);
+    avlTree.printTree();
+
+    cout << "\nEliminando el valor 3" << endl;
+    avlTree.eliminar(3);
+    avlTree.printTree();
+
+    return 0;
+}
