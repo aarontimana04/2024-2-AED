@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 template <typename T>
@@ -53,13 +54,11 @@ public:
     }
 
     // Devuelve el primer nodo de la cola
-    Nodo<T>* front() const {
-        if (empty()) {
-            cout << "Queue vacía." << endl;
-            return nullptr;
-        } else {
-            return cabeza;
+    T front() const {
+        if (!empty()) {
+            return cabeza->valor;
         }
+        throw runtime_error("Queue vacía.");
     }
 
     // Devuelve el último nodo de la cola
@@ -131,4 +130,5 @@ public:
         return true;
     }
 };
+
 */
