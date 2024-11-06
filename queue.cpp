@@ -101,3 +101,34 @@ public:
         cout << endl;
     }
 };
+
+/*
+class Solution {
+public:
+    bool isBipartite(vector<vector<int>>& g) {
+        int n = g.size();
+        vector<int> vis(n);
+        iter_queue<pair<int, int>> q;  // Usamos iter_queue en lugar de queue
+
+        for (int i = 0; i < n; i++) {
+            if (vis[i]) continue;
+            q.push({i, 1});
+            while (!q.empty()) {
+                int node = q.front().first;
+                int color = q.front().second;
+                q.pop();
+                
+                for (auto& adj : g[node]) {
+                    if (adj == node) continue; // Ignorar auto-bucle
+                    if (vis[adj] == color) return false; // Conflicto de colores, no es bipartito
+                    if (vis[adj]) continue;
+                    
+                    vis[adj] = (color == 1) ? 2 : 1;
+                    q.push({adj, vis[adj]});
+                }
+            }
+        }
+        return true;
+    }
+};
+*/
