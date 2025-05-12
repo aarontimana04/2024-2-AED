@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdexcept>
 
 namespace paso4 {
     // Declaramos nuestra clase abstracta Cola
@@ -48,7 +47,7 @@ namespace paso4 {
 
         void encolar(const E& valor) override {
             if (tam == tamMax) {
-                throw std::overflow_error("Cola llena"); // Manejo de error
+                std::cout<<"Cola llena"; // Manejo de error
             }
             arreglo[fin] = valor; // Colocar el elemento en el final
             fin = (fin + 1) % tamMax; // Actualizar el índice del final
@@ -57,7 +56,7 @@ namespace paso4 {
 
         E desencolar() override {
             if (tam == 0) {
-                throw std::underflow_error("Cola vacía"); // Manejo de error
+                std::cout<<"Cola vacía"; // Manejo de error
             }
             E valor = arreglo[frente]; // Obtener el valor del frente
             frente = (frente + 1) % tamMax; // Actualizar el índice del frente
@@ -73,7 +72,7 @@ namespace paso4 {
 
         const E& valorFrontal() const override {
             if (tam == 0) {
-                throw std::underflow_error("Cola vacía"); // Manejo de error
+                std::cout<<"Cola vacía"; // Manejo de error
             }
             return arreglo[frente]; // Retornar el valor en el frente
         }
@@ -113,13 +112,6 @@ int main() {
     cout << "Eliminando elementos de la cola:" << endl;
     while (cola.longitud() > 1) {
         cout << "Elemento eliminado: " << cola.desencolar() << endl;
-    }
-
-    // Intentar obtener el valor en el frente de una cola vacía
-    try {
-        cout << "Intentando obtener el valor en el frente de la cola vacía: " << cola.valorFrontal() << endl;
-    } catch (const std::underflow_error& e) {
-        cout << "Error: " << e.what() << endl; // Manejo de error
     }
 
     return 0;
