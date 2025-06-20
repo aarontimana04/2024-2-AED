@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terminal Linux Simulada</title>
   <style>
     body {
@@ -32,7 +33,19 @@
       font-size: 16px;
       border: none;
       outline: none;
-      width: 80%;
+      width: 70vw;
+    }
+
+    #apagado {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: black;
+      color: red;
+      font-size: 24px;
+      font-family: monospace;
+      text-align: center;
     }
   </style>
 </head>
@@ -40,29 +53,32 @@
   <div id="terminal">
     <div id="history"></div>
     <div class="input-line">
-      <span id="prompt">usuario@simulador:~$ </span>
+      <span id="prompt">usuario@android:~$ </span>
       <input id="command" autofocus />
     </div>
   </div>
+
+  <div id="apagado">🔌 Dispositivo apagado</div>
 
   <script>
     const history = document.getElementById('history');
     const input = document.getElementById('command');
     const terminal = document.getElementById('terminal');
+    const apagado = document.getElementById('apagado');
 
     const comandos = {
-      'help': 'Comandos disponibles:\nhelp, ls, whoami, pwd, clear, top, uname, date',
-      'ls': 'documentos  descargas  música  imágenes  videos  escritorio',
+      'help': 'Comandos: help, ls, whoami, pwd, clear, top, uname, date',
+      'ls': 'descargas  documentos  cámara  whatsapp  música',
       'whoami': 'usuario',
-      'pwd': '/home/usuario',
-      'uname': 'Linux simulador 5.15.0-104-generic x86_64',
-      'top': 'PID   USER     CPU%   MEM%  COMMAND\n1234  usuario  0.3    1.2   chrome\n2345  usuario  0.1    0.8   code\n3456  usuario  0.0    0.5   node',
+      'pwd': '/storage/emulated/0',
+      'uname': 'Android 13 Linux 5.15.0 arm64',
+      'top': 'PID   APP       CPU%   MEM%\n1290  Chrome    10.2   250MB\n1302  WhatsApp   4.3   180MB',
       'date': new Date().toString(),
     };
 
     function escribirComando(cmd) {
       const line = document.createElement('div');
-      line.innerHTML = `<span>usuario@simulador:~$</span> ${cmd}`;
+      line.innerHTML = `<span>usuario@android:~$</span> ${cmd}`;
       history.appendChild(line);
 
       const respuesta = document.createElement('div');
@@ -87,8 +103,12 @@
       }
     });
 
-    // Autoscroll al iniciar
-    terminal.scrollTop = terminal.scrollHeight;
+    // 🔌 Simular apagado tras 2 segundos
+    setTimeout(() => {
+      if (navigator.vibrate) navigator.vibrate(200);  // vibrar un instante
+      terminal.style.display = 'none';
+      apagado.style.display = 'flex';
+    }, 2000);
   </script>
 </body>
 </html>
