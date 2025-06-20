@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Terminal Linux Simulada</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: #00FF00;
+      font-family: monospace;
+      font-size: 16px;
+    }
+
+    #terminal {
+      padding: 10px;
+      white-space: pre-wrap;
+      overflow-y: scroll;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .input-line {
+      display: inline;
+    }
+
+    input {
+      background: black;
+      color: #00FF00;
+      font-family: monospace;
+      font-size: 16px;
+      border: none;
+      outline: none;
+      width: 80%;
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal">
+    <div id="history"></div>
+    <div class="input-line">
+      <span id="prompt">usuario@simulador:~$ </span>
+      <input id="command" autofocus />
+    </div>
+  </div>
+
+  <script>
+    const history = document.getElementById('history');
+    const input = document.getElementById('command');
+    const terminal = document.getElementById('terminal');
+
+    const comandos = {
+      'help': 'Comandos disponibles:\nhelp, ls, whoami, pwd, clear, top, uname, date',
+      'ls': 'documentos  descargas  música  imágenes  videos  escritorio',
+      'whoami': 'usuario',
+      'pwd': '/home/usuario',
+      'uname': 'Linux simulador 5.15.0-104-generic x86_64',
+      'top': 'PID   USER     CPU%   MEM%  COMMAND\n1234  usuario  0.3    1.2   chrome\n2345  usuario  0.1    0.8   code\n3456  usuario  0.0    0.5   node',
+      'date': new Date().toString(),
+    };
+
+    function escribirComando(cmd) {
+      const line = document.createElement('div');
+      line.innerHTML = `<span>usuario@simulador:~$</span> ${cmd}`;
+      history.appendChild(line);
+
+      const respuesta = document.createElement('div');
+      if (cmd === 'clear') {
+        history.innerHTML = '';
+      } else if (comandos[cmd]) {
+        respuesta.textContent = comandos[cmd];
+        history.appendChild(respuesta);
+      } else {
+        respuesta.textContent = `bash: ${cmd}: comando no encontrado`;
+        history.appendChild(respuesta);
+      }
+
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        escribirComando(cmd);
+        input.value = '';
+      }
+    });
+
+    // Autoscroll al iniciar
+    terminal.scrollTop = terminal.scrollHeight;
+  </script>
+</body>
+</html>
